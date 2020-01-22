@@ -14,7 +14,7 @@ router.get('/', (req, res) => {
 });
 
 //route for registration for the user
-router.post('/users', async (req, res) => {
+router.post('/users/registration', async (req, res) => {
     console.log('users registration');
 
     const user = new User(req.body);
@@ -44,7 +44,9 @@ router.get('/users/list', authenticate, async (req, res) => {
             'users': users
         });
     } catch (error) {
-        res.status(500).send()
+        res.status(400).send({
+            'message': 'error while grtting usersList'
+        })
     }
 });
 
@@ -57,7 +59,9 @@ router.delete('/users/delete', authenticate, async (req, res) => {
             message: 'deleted successfully'
         })
     } catch (error) {
-        res.status(500).send()
+        res.status(400).send({
+            message: 'error while deleting user'
+        })
     }
 });
 
@@ -67,7 +71,7 @@ router.post('/users/login', async (req, res) => {
     try {
         const user = await User.checkValidCredentials(req.body.email, req.body.password)
         // console.log(user);
-        //  const token = await user.newAuthToken()
+        const token = await user.newAuthToken()
         res.status(200).send(
             {
                 token: user.tokens[0].token,
@@ -93,7 +97,9 @@ router.post('/users/logout', authenticate, async (req, res) => {
             'message': 'LoggedOut SuccessFully'
         });
     } catch (error) {
-        res.status(500).send()
+        res.status(400).send({
+            message: 'error while logout'
+        })
     }
 })
 
@@ -106,7 +112,9 @@ router.post('/users/logoutall', authenticate, async (req, res) => {
             'message': 'LoggedOut SuccessFully'
         });
     } catch (error) {
-        res.status(500).send();
+        res.status(400).send({
+            message: 'error while loggedout all'
+        });
     }
 });
 
